@@ -1,0 +1,11 @@
+{
+    "phpcbf.executablePath": "/var/www/yogesh.es.com/public_html/es-crm-portal/vendor/bin/phpcbf",
+    "phpcs.executablePath": "/var/www/yogesh.es.com/public_html/es-crm-portal/vendor/bin/phpcs",
+    "files.autoSave": "afterDelay",
+    "phpcs.enable": true,
+    "phpcs.standard": "WordPress",
+    "phpcbf.debug": true,
+    "phpcbf.standard": "WordPress",
+    "phpcbf.onsave": true,
+    "window.zoomLevel": 1
+}

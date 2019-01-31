@@ -9,6 +9,7 @@
         <meta name="csrf-token" value="{{ csrf_token() }}" />
         <link href="https://unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet" />
         <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
     </head>
     <body>
         <div id="app" class="container">
@@ -17,3 +18,18 @@
         <script src="{{ url('vuelaravelcrud/public/js/app.js') }}" type="text/javascript"></script>
     </body>
 </html>
+<style>
+body {
+  background-color: linen;
+}
+
+h1 {
+  color: maroon;
+}
+.set-width-column {
+    width : 30%
+}
+.set-width-column-action{
+    width : 20%
+}
+</style>

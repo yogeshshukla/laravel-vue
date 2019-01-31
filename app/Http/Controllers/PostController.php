@@ -8,61 +8,86 @@ use App\Post;
 use Validator;
 
 
-class PostController extends Controller
-{
-    public function store(Request $request)
-    {
-      $validator = Validator::make($request->all(), [ 
-        'title' => 'required', 
-        'body' => 'required'
-      ]);
-      if ($validator->fails()) { 
-          return response()->json(['error'=>$validator->errors()], 401);            
-      }
-      $post = new Post([
-        'title' => $request->get('title'),
-        'body' => $request->get('body')
-      ]);
+class PostController extends Controller {
 
-      $post->save();
+	public function store( Request $request ) {
+		$validator = Validator::make(
+			$request->all(),
+			[
+				'title' => 'required',
+				'body'  => 'required',
+			]
+		);
+		if ( $validator->fails() ) {
+			return response()->json( [ 'error' => $validator->errors() ], 401 );
+		}
+		$post = new Post(
+			[
+				'title' => $request->get( 'title' ),
+				'body'  => $request->get( 'body' ),
+			]
+		);
 
-      return response()->json('successfully added');
-    }
+		$post->save();
 
-    public function index()
-    {
-      return new PostCollection(Post::all());
-    }
+		return response()->json( 'successfully added' );
+	}
 
-    public function edit($id)
-    {
-      $post = Post::find($id);
-      return response()->json($post);
-    }
+	public function index( Request $request ) {
+		$query   = $request->get( 'query' ) !== '' ? $request->get( 'query' ) : false;
+		$limit   = $request->get( 'limit' ) !== '' ? $request->get( 'limit' ) : 10;
+		$sort    = $request->get( 'ascending' ) === '0' ? 'DESC' : 'ASC';
+		$orderby = $request->get( 'orderBy' ) !== '' ? $request->get( 'orderBy' ) : false;
+		
+		$post = new Post();
+		if ( $query ) {
+			$post = $post->where( 'title', 'like', '%' . $query . '%' )
+			->orWhere( 'body', 'like', '%' . $query . '%' );
+		}
+		if ( $orderby ) {
+			$post = $post->orderBy( $orderby, $sort );
+		}
 
-    public function update($id, Request $request)
-    {
-      $validator = Validator::make($request->all(), [ 
-        'title' => 'required', 
-        'body' => 'required'
-      ]);
-      if ($validator->fails()) { 
-          return response()->json(['error'=>$validator->errors()], 401);            
-      }
+		$posts = $post->paginate( $limit )->toArray();
 
-      $post = Post::find($id);
+		return response()->json(
+			[
+				'data'  => $posts['data'],
+				'count' => $posts['total'],
+			]
+		);
 
-      $post->update($request->all());
+	}
 
-      return response()->json('successfully updated');
-    }
+	public function edit( $id ) {
+		$post = Post::find( $id );
+		return response()->json( $post );
+	}
 
-    public function delete($id)
-    {
-      $post = Post::find($id);
+	public function update( $id, Request $request ) {
+		$validator = Validator::make(
+			$request->all(),
+			[
+				'title' => 'required',
+				'body'  => 'required',
+			]
+		);
+		if ( $validator->fails() ) {
+			return response()->json( [ 'error' => $validator->errors() ], 401 );
+		}
 
-      $post->delete();
+		$post = Post::find( $id );
 
-      return response()->json('successfully deleted');
-    }
+		$post->update( $request->all() );
+
+		return response()->json( 'successfully updated' );
+	}
+
+	public function delete( $id ) {
+		$post = Post::find( $id );
+
+		$post->delete();
+
+		return response()->json( 'successfully deleted' );
+	}
 }
